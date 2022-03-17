@@ -1,4 +1,8 @@
+echo Введите A
+
 read a
+
+echo Введите B
 
 read b
 
