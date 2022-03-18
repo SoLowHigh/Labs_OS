@@ -1,3 +1,8 @@
+if [ -z $1 ]
+	then
+		exit
+fi
+
 if [ -f $1 ]
 
 	then
