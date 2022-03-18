@@ -12,6 +12,15 @@ then
 exit
 fi
 
+# ВОЗНИКАЕТ ЛЁГКИЙ АФИГ, ЕСЛИ НЕ ВВОДИТСЯ ПАРАМЕТР ДЛЯ РАБОТЫ
+if [[ -z $1 ]]
+then
+	echo "А что делать-то?"
+	echo "Введите HELP параметром,"
+	echo "если непонятно"
+exit
+fi
+
 # ВЫВОДИТСЯ ПРИ ЛЮБОМ ПАРАМЕТРЕ, КРОМЕ "HELP"
 echo "Введите резервную директорию B"
 echo "(или не вводите, возьму \".\"):"
@@ -23,20 +32,12 @@ then
 	dir="."
 fi
 
-# ВОЗНИКАЕТ ЛЁГКИЙ АФИГ, ЕСЛИ НЕ ВВОДИТСЯ ПАРАМЕТР ДЛЯ РАБОТЫ
-if [[ -z $1 ]]
-then
-	echo "А что делать-то?"
-	echo "Введите HELP параметром,"
-	echo "если непонятно"
-fi
-
 # ЗАМЕЩЕНИЕ НЕДОСТАЮЩИХ ФАЙЛОВ
 if [[ $1 = 1 ]]
 then
 	for f in *
 	do	# если файл НЕ скрипт и НЕ резервная директория
-		if [[ $f != HELPasParam2help.sh || $f != $dir ]]
+		if ! [[ $f = HELPasParam2help.sh || $f = $dir ]]
 		then
 			cp -r "$f" "$dir/"
 		fi
@@ -49,7 +50,7 @@ if [[ $1 = 2 ]]
 then 
 	for f in *
 	do	# если НЕТ файла в резервной дир. + два предыдущих условия
-		if ! [[ -e $dir/$f || $f != HELPasParam2help.sh || $f != $dir ]]
+		if ! [[ -e $dir/$f || $f = HELPasParam2help.sh || $f = $dir ]]
 		then
 			cp -r "$f" "$dir/"
 		fi
@@ -59,14 +60,16 @@ fi
 
 # УДАЛЕНИЕ ЛИШНИХ ФАЙЛОВ
 if [[ $1 = 3 ]]
-then 
-	for f in $dir/*
+then
+	sdir=$(realpath .)
+	cd $dir
+	for f in *
 	do	
 		# если ЕСТЬ файл в рез. директории..
 		if [[ -e $f ]]
 		then
 			# ..но его НЕТ в исходной
-			if ! [[ -e $dir/$f ]]
+			if ! [[ -e $sdir/$f ]]
 			then
 				rm -r "$f"
 			fi
